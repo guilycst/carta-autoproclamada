@@ -39,6 +39,6 @@ npm run deploy
 
 GitHub Actions is the production publisher. Pull requests build, verify the manifest, run browser tests and package a dry run without deployment credentials. Main builds upload the validated publication; a separate job downloads that exact artifact, verifies its bytes, rejects stale main commits, deploys and checks every public file plus a missing URL. Verification retries propagation for up to three minutes and preserves a receipt as an Actions artifact.
 
-The repository secret `CLOUDFLARE_API_TOKEN` authenticates only the deploy step. Its Cloudflare permissions are Workers Scripts Write for the hosting account, plus Zone Read and Workers Routes Write for `guigoes.com`. No API token belongs in Git. `workers.dev` and version preview URLs are disabled. Only `public/` is served, excluding source files, browser-test outputs and filled sample letters.
+The repository secret `CLOUDFLARE_API_TOKEN` authenticates only the deploy step. Its Cloudflare permissions are Workers Scripts Write for the hosting account and Zone Read for `guigoes.com`. No API token belongs in Git. `workers.dev` and version preview URLs are disabled. Only `public/` is served, excluding source files, browser-test outputs and filled sample letters.
 
 For an explicitly authorized manual recovery, `npm run deploy` publishes the existing `public/` artifact without rebuilding it. Authenticate Wrangler with the hosting account first, then run `npm run verify` against that same artifact. Normal releases use the main-branch workflow.
