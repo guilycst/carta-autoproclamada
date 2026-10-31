@@ -1,0 +1,28 @@
+version: 1
+source: .build/content
+output: .build/public
+assets: local
+asset_budget_bytes: 67108864
+offline: true
+site:
+  name: Carta
+  description: Declare-se presidente do Brasil. Uma paródia em uma página, pronta para compartilhar.
+  base_url: https://carta.guigoes.com
+  home: index.md
+  logo: assets/icon.svg
+  icon: assets/icon.svg
+  theme_color: '#1351b4'
+  social_image:
+    path: assets/social.png
+    alt: Sua Excelência, você. Gere sua carta de autoproclamação.
+layout:
+  kind: article
+locales:
+  default: pt-BR
+  supported: [pt-BR]
+theme:
+  builtin: false
+  allow_switch_theme: false
+  color_mode: light
+custom_css:
+  - css_url: assets/site.css

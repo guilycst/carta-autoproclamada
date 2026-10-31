@@ -1,0 +1,11 @@
+# Parody coat of arms
+
+Generated with the built-in imagegen tool on October 31, 2026. Edit reference: `brasao.jpg`, the original Cemaden/MCTI national coat of arms. Output: `brasao-parodia.png`. The output is a fictional parody, not an official emblem. The final revision removes the date from the lower ribbon tails.
+
+## Final date-removal edit prompt
+
+Edit target: the attached parody Brazilian coat of arms. Make exactly one localized change: remove all date lettering from the two lower blue ribbon tails, deleting "15 de Novembro" on the left and "de 1889" on the right. Leave both blue ribbon tails intact as clean blank blue ribbons, with their existing folds, black outlines, shape and highlights. Do not replace the date with anything. Preserve everything else exactly: the main ribbon must still read "REPÚBLICA AUTOPROCLAMADA DO BRAZIL", including BRAZIL with Z; preserve all stars, plants, colors, sword, tiny deliberate asymmetries, proportions, white square background and image composition. No dates, no numerals, no other added text. This is a precision text removal edit, not a redesign.
+
+## Initial generation prompt
+
+Use case: text-localization / precise-object-edit. Edit the attached coat of arms into a subtly defective political parody for the website carta.guigoes.com. Preserve the recognizable Brazilian coat-of-arms composition, green/gold/blue/red palette, flat crisp heraldic illustration, central blue shield, stars, plant branches, sword, ribbons, and pure white square background. Replace the main ribbon inscription EXACTLY with "REPÚBLICA AUTOPROCLAMADA DO BRAZIL". Important spelling: AUTOPROCLAMADA replaces FEDERATIVA, and BRAZIL ends in Z-I-L, never BRASIL. Make this long phrase readable, using a slightly wider ribbon and clean condensed uppercase letters if needed. Keep the secondary date ribbon text "15 de Novembro" and "de 1889". Introduce only two or three small deliberate heraldic flaws: one small star slightly crooked, two leaves slightly mismatched, one ribbon fold a little uneven. It should look almost plausible at first glance, with subtle amateur imperfections, not a wreck or an exaggerated cartoon. No new objects, no humans, no unrelated words, no extra logos, no watermark. Center the entire complete emblem with comfortable white margin on every side. Typography accuracy of the main ribbon is essential.

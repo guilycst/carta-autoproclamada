@@ -1,0 +1,49 @@
+:root { color-scheme: light; --ink: #071d41; --blue: #1351b4; --green: #168821; --yellow: #ffcd07; --muted: #555; --desk: #fff; --line: #ccc; --stamp: #a42532; font-family: Arial, Helvetica, sans-serif; color: var(--ink); background: var(--desk); }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--desk); }
+.carta-app { max-width: 1440px; margin: auto; padding: 0 64px; }
+.carta-app a { color: inherit; text-underline-offset: 4px; }
+.carta-app .masthead { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 22px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
+.carta-app .portal-brand { display: flex; align-items: center; gap: 16px; }
+.carta-app .portal-brand img { display: block; width: 64px; height: 64px; object-fit: contain; }
+.carta-app .brand { font: bold 38px Arial, Helvetica, sans-serif; letter-spacing: -2px; text-decoration: none; color: var(--blue); }
+.carta-app .parody-label { color: var(--blue); font-size: 13px; text-align: right; }
+.carta-app .workspace { display: grid; grid-template-columns: minmax(270px, .8fr) minmax(0, 1.2fr); grid-template-areas: "editor preview" "exports preview"; grid-template-rows: auto 1fr; column-gap: 8%; padding: 58px 0 46px; }
+.carta-app .editor { grid-area: editor; }
+.carta-app .preview { grid-area: preview; }
+.carta-app .export-controls { grid-area: exports; }
+.carta-app h1 { margin: 0; font: bold clamp(42px, 4.5vw, 60px)/1.08 Arial, Helvetica, sans-serif; letter-spacing: -2px; color: var(--blue); }
+.carta-app .intro { font-size: 19px; line-height: 1.55; margin: 24px 0 32px; }
+.carta-app .field { margin-bottom: 22px; }
+.carta-app label { display: block; font-weight: 700; font-size: 15px; margin-bottom: 9px; }
+.carta-app input, .carta-app select { width: 100%; min-height: 49px; padding: 11px 13px; color: var(--ink); background: #fff; border: 1px solid #888; border-radius: 4px; font: inherit; font-size: 16px; }
+.carta-app input::placeholder { color: #647984; opacity: 1; }
+.carta-app .hint { font-size: 13px; line-height: 1.5; color: var(--muted); margin: 7px 0 0; }
+.carta-app .actions { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 28px; }
+.carta-app button { cursor: pointer; min-height: 49px; flex: 1 1 130px; padding: 12px 19px; border: 1px solid var(--blue); border-radius: 30px; background: var(--blue); color: #fff; font: bold 15px Arial, sans-serif; white-space: nowrap; }
+.carta-app button.secondary { color: var(--blue); background: #fff; }
+.carta-app button:hover { background: #0c326f; color: #fff; }
+.carta-app button:disabled { cursor: wait; opacity: .6; }
+.carta-app [hidden] { display: none !important; }
+.carta-app :focus-visible { outline: 3px solid var(--yellow); outline-offset: 3px; box-shadow: 0 0 0 5px var(--ink); }
+.carta-app .status { min-height: 22px; margin: 10px 0 0; font-size: 13px; line-height: 1.5; }
+.carta-app .privacy { color: var(--muted); font-size: 13px; line-height: 1.65; margin: 13px 0 25px; max-width: 36ch; }
+.carta-app details { font-size: 13px; line-height: 1.7; color: var(--muted); }
+.carta-app summary { cursor: pointer; color: var(--ink); text-decoration: underline; text-underline-offset: 4px; }
+.carta-app details p { margin: 10px 0; }
+.carta-app .preview-heading { display: flex; flex-direction: column; gap: 5px; margin: 0 0 17px; padding-bottom: 14px; border-bottom: 4px solid var(--green); }
+.carta-app .preview-heading h2 { font-size: 15px; font-weight: 700; margin: 0; color: var(--blue); }
+.carta-app .preview-heading span { font-size: 12px; color: var(--muted); }
+.carta-app .paper { background: #fff; border: 1px solid #ddd; box-shadow: 0 5px 20px #071d4114; }
+.carta-app canvas { display: block; width: 100%; height: auto; aspect-ratio: 1080 / 1528; }
+.carta-app .preview-note { text-align: right; font-size: 11px; margin: 12px 0; color: var(--muted); }
+.carta-app .transcript { margin-top: 14px; }
+.carta-app .transcript h3 { font-family: Georgia, serif; color: var(--ink); font-size: 20px; }
+.carta-app .transcript p { overflow-wrap: anywhere; }
+.carta-app .site-footer { display: flex; justify-content: space-between; gap: 20px; border-top: 4px solid var(--blue); padding: 23px 0 28px; font-size: 12px; line-height: 1.6; color: var(--muted); }
+.carta-app .site-footer nav { display: flex; flex-wrap: wrap; gap: 20px; }
+.carta-app .noscript { background: #fff; padding: 16px; color: var(--stamp); }
+@media (min-width: 1150px) { .carta-app .editor { padding-top: 14px; } }
+@media (max-width: 640px) { .carta-app .export-controls .actions { margin-top: 0; } }
+@media (max-width: 800px) { .carta-app { padding: 0 24px; } .carta-app .workspace { column-gap: 5%; grid-template-columns: minmax(240px, .9fr) minmax(0, 1fr); padding-top: 36px; } .carta-app h1 { font-size: 51px; letter-spacing: -2px; } }
+@media (max-width: 640px) { .carta-app { padding: 0; } .carta-app .masthead { padding: 14px 0; gap: 12px; } .carta-app .portal-brand { gap: 7px; } .carta-app .portal-brand img { width: 45px; height: 45px; } .carta-app .brand { font-size: 30px; } .carta-app .parody-label { max-width: 110px; font-size: 12px; } .carta-app .workspace { display: flex; flex-direction: column; gap: 30px; padding-top: 32px; } .carta-app h1 { font-size: clamp(36px, 11vw, 48px); letter-spacing: -1.5px; } .carta-app .intro { margin-top: 19px; margin-bottom: 26px; font-size: 18px; } .carta-app .privacy { max-width: none; } .carta-app .site-footer { flex-direction: column; gap: 8px; } }
