@@ -26,7 +26,7 @@ if (!origin) {
   console.log(`Verified ${entries.length} local publication files.`);
 } else {
   assert.equal(origin, manifest.baseURL, 'Verification origin must match the canonical origin.');
-  const browser = await chromium.launch({ channel: process.env.CI ? undefined : 'chrome' });
+  const browser = await chromium.launch({ channel: 'chrome' });
   const page = await browser.newPage();
   page.setDefaultTimeout(10_000);
   let challengeResponse;

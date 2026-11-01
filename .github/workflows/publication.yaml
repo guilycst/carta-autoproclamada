@@ -33,7 +33,6 @@ jobs:
           node-version: '24'
           cache: npm
       - run: npm ci
-      - run: npx --no-install playwright install --with-deps chromium
       - run: npm test
       - run: npm run dry-run
         env:
@@ -100,7 +99,6 @@ jobs:
       - name: Verify public origin
         if: steps.publish.outcome == 'success'
         run: |
-          npx --no-install playwright install --with-deps chromium
           status=0
           npm run verify || status=$?
           # Exit 2 records an explicit Cloudflare challenge, not a successful public check.
