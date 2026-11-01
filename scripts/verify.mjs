@@ -53,7 +53,7 @@ if (!origin) {
           assert.equal(response.status, 200, `HTTP status: ${entry.path}; Cloudflare mitigation: ${response.mitigated}`);
           assert.equal(new URL(response.url).origin, origin, `Unexpected redirect: ${entry.path}`);
           const type = response.type;
-          const expected = entry.path.endsWith('.html') ? ['text/html'] : entry.path.endsWith('.css') ? ['text/css'] : entry.path.endsWith('.png') ? ['image/png'] : entry.path.endsWith('.svg') ? ['image/svg+xml'] : entry.path.endsWith('.json') ? ['application/json'] : entry.path.endsWith('.xml') ? ['application/xml', 'text/xml'] : ['text/plain'];
+          const expected = entry.path.endsWith('.html') ? ['text/html'] : entry.path.endsWith('.css') ? ['text/css'] : entry.path.endsWith('.png') ? ['image/png'] : entry.path.endsWith('.jpg') ? ['image/jpeg'] : entry.path.endsWith('.svg') ? ['image/svg+xml'] : entry.path.endsWith('.json') ? ['application/json'] : entry.path.endsWith('.xml') ? ['application/xml', 'text/xml'] : ['text/plain'];
           assert.ok(expected.includes(type), `Unexpected MIME type for ${entry.path}: ${type}`);
           let bytes = new Uint8Array(response.bytes);
           if (entry.path.endsWith('.html')) {

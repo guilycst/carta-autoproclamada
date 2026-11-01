@@ -13,8 +13,8 @@ site:
   icon: assets/icon.svg
   theme_color: '#1351b4'
   social_image:
-    path: assets/social.png
-    alt: Vossa Excelência, Presidente. Gere sua carta de autoproclamação.
+    path: assets/social-parodia.jpg
+    alt: Vossa Excelência, Presidente. Crie sua carta de autoproclamação em PNG ou PDF. Paródia política, sem valor oficial.
 layout:
   kind: article
 locales:
