@@ -3,6 +3,7 @@ import { createHash } from 'node:crypto';
 import { readFile, mkdir, writeFile } from 'node:fs/promises';
 import { resolve, sep } from 'node:path';
 import { setTimeout } from 'node:timers/promises';
+import { removeCloudflareJavaScriptDetection } from './cloudflare-html.mjs';
 
 const root = resolve('public');
 const digest = bytes => createHash('sha256').update(bytes).digest('hex');
@@ -29,6 +30,7 @@ if (!origin) {
   for (;;) {
     attempt++;
     try {
+      const normalizedHTMLFiles = [];
       await Promise.all(entries.map(async entry => {
         const response = await fetch(new URL(entry.path, origin + '/'), { signal: AbortSignal.timeout(10_000), cache: 'no-store' });
         assert.equal(response.status, 200, `HTTP status: ${entry.path}`);
@@ -36,11 +38,18 @@ if (!origin) {
         const type = response.headers.get('content-type')?.split(';')[0];
         const expected = entry.path.endsWith('.html') ? ['text/html'] : entry.path.endsWith('.css') ? ['text/css'] : entry.path.endsWith('.png') ? ['image/png'] : entry.path.endsWith('.svg') ? ['image/svg+xml'] : entry.path.endsWith('.json') ? ['application/json'] : entry.path.endsWith('.xml') ? ['application/xml', 'text/xml'] : ['text/plain'];
         assert.ok(expected.includes(type), `Unexpected MIME type for ${entry.path}: ${type}`);
-        assert.equal(digest(new Uint8Array(await response.arrayBuffer())), entry.digest, `Public artifact mismatch: ${entry.path}`);
+        let bytes = new Uint8Array(await response.arrayBuffer());
+        if (entry.path.endsWith('.html')) {
+          const html = new TextDecoder('utf-8', { fatal: true }).decode(bytes);
+          const normalized = removeCloudflareJavaScriptDetection(html);
+          if (normalized !== html) normalizedHTMLFiles.push(entry.path);
+          bytes = new TextEncoder().encode(normalized);
+        }
+        assert.equal(digest(bytes), entry.digest, `Public artifact mismatch: ${entry.path}`);
       }));
       const missing = await fetch(origin + '/__carta_missing_route__', { signal: AbortSignal.timeout(10_000) });
       assert.equal(missing.status, 404, 'Missing URLs must return HTTP 404.');
-      const receipt = { origin, manifestDigest: manifest.digest, verifiedAt: new Date().toISOString(), attempts: attempt, files: entries.length, missingStatus: missing.status };
+      const receipt = { origin, manifestDigest: manifest.digest, verifiedAt: new Date().toISOString(), attempts: attempt, files: entries.length, normalizedHTMLFiles, missingStatus: missing.status };
       await mkdir('output', { recursive: true });
       await writeFile('output/production-verification.json', JSON.stringify(receipt, null, 2) + '\n');
       console.log(JSON.stringify(receipt));
