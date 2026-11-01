@@ -6,3 +6,11 @@ const pattern = new RegExp(escaped.replaceAll("RAYTOKEN", "[a-f0-9]{16,32}").rep
 export function removeCloudflareJavaScriptDetection(html) {
   return html.replace(pattern, "");
 }
+
+export function assertNoCloudflareChallenge(status, mitigated, path) {
+  if (status === 403 && mitigated === 'challenge') {
+    const error = new Error(`Cloudflare requires a human challenge for ${path}.`);
+    error.code = 'CLOUDFLARE_CHALLENGE';
+    throw error;
+  }
+}

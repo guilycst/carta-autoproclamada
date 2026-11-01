@@ -41,6 +41,8 @@ GitHub Actions is the production publisher. Pull requests build, verify the mani
 
 Public verification uses Chromium so Cloudflare can perform its normal browser checks before requests for publication files. It saves a screenshot alongside the verification receipt. Cloudflare can append its JavaScript Detection script to served HTML. The verifier recognizes one reviewed, exact script template, allowing only its request-specific Ray ID and timestamp to vary. It removes that script solely from the comparison string, records the affected files in the receipt and verifies all authored HTML against the manifest. Published HTML is never rewritten; unrecognized or changed scripts fail verification.
 
+An explicit HTTP 403 with `cf-mitigated: challenge` records public verification as `blocked` and exits with code 2. CI reports a warning and preserves the screenshot and receipt, without marking public checks as passed or undoing the completed deployment. Other HTTP failures, timeouts and mismatched files fail CI. Check the public site from a browser when a runner receives a human challenge.
+
 The repository secret `CLOUDFLARE_API_TOKEN` authenticates only the deploy step. Its Cloudflare permissions are Workers Scripts Write for the hosting account and Zone Read for `guigoes.com`. No API token belongs in Git. `workers.dev` and version preview URLs are disabled. Only `public/` is served, excluding source files, browser-test outputs and filled sample letters.
 
 For an explicitly authorized manual recovery, `npm run deploy` publishes the existing `public/` artifact without rebuilding it. Authenticate Wrangler with the hosting account first, then run `npm run verify` against that same artifact. Normal releases use the main-branch workflow.

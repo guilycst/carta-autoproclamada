@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
-import { readFile, mkdir, writeFile } from 'node:fs/promises';
+import { readFile, mkdir, writeFile, appendFile } from 'node:fs/promises';
 import { resolve, sep } from 'node:path';
 import { setTimeout } from 'node:timers/promises';
-import { removeCloudflareJavaScriptDetection } from './cloudflare-html.mjs';
+import { removeCloudflareJavaScriptDetection, assertNoCloudflareChallenge } from './cloudflare-html.mjs';
 import { chromium } from '@playwright/test';
 
 const root = resolve('public');
@@ -38,11 +38,13 @@ if (!origin) {
     for (;;) {
       attempt++;
       try {
-        await page.goto(origin, { waitUntil: 'networkidle', timeout: 30_000 });
+        const navigation = await page.goto(origin, { waitUntil: 'domcontentloaded', timeout: 30_000 });
+        assertNoCloudflareChallenge(navigation.status(), navigation.headers()['cf-mitigated'], '/');
         await page.locator('#letter-preview').waitFor({ state: 'visible', timeout: 10_000 });
         const normalizedHTMLFiles = [];
         await Promise.all(entries.map(async entry => {
           const response = await fetchPublic(entry.path);
+          assertNoCloudflareChallenge(response.status, response.mitigated, entry.path);
           assert.equal(response.status, 200, `HTTP status: ${entry.path}; Cloudflare mitigation: ${response.mitigated}`);
           assert.equal(new URL(response.url).origin, origin, `Unexpected redirect: ${entry.path}`);
           const type = response.type;
@@ -58,14 +60,25 @@ if (!origin) {
           assert.equal(digest(bytes), entry.digest, `Public artifact mismatch: ${entry.path}`);
         }));
         const missing = await fetchPublic('/__carta_missing_route__');
+        assertNoCloudflareChallenge(missing.status, missing.mitigated, '/__carta_missing_route__');
         assert.equal(missing.status, 404, 'Missing URLs must return HTTP 404.');
-        const receipt = { origin, manifestDigest: manifest.digest, verifiedAt: new Date().toISOString(), transport: 'chromium', attempts: attempt, files: entries.length, normalizedHTMLFiles, missingStatus: missing.status };
+        const receipt = { status: 'passed', origin, manifestDigest: manifest.digest, verifiedAt: new Date().toISOString(), transport: 'chromium', attempts: attempt, files: entries.length, normalizedHTMLFiles, missingStatus: missing.status };
         await mkdir('output', { recursive: true });
         await writeFile('output/production-verification.json', JSON.stringify(receipt, null, 2) + '\n');
         await page.screenshot({ path: 'output/production-verification.png', fullPage: true });
         console.log(JSON.stringify(receipt));
         break;
       } catch (error) {
+        if (error.code === 'CLOUDFLARE_CHALLENGE') {
+          const receipt = { status: 'blocked', origin, manifestDigest: manifest.digest, checkedAt: new Date().toISOString(), reason: error.message };
+          await mkdir('output', { recursive: true });
+          await writeFile('output/production-verification.json', JSON.stringify(receipt, null, 2) + '\n');
+          await page.screenshot({ path: 'output/production-verification.png', fullPage: true });
+          console.warn(`::warning::Public verification blocked. ${error.message} Deployment completed; public file checks are incomplete.`);
+          if (process.env.GITHUB_STEP_SUMMARY) await appendFile(process.env.GITHUB_STEP_SUMMARY, `### Public verification blocked\n\nDeployment completed, but Cloudflare requires a human challenge from this runner. Public file checks are incomplete. Inspect the verification artifact and check ${origin} from a browser.\n`);
+          process.exitCode = 2;
+          break;
+        }
         if (Date.now() >= deadline) {
           await mkdir('output', { recursive: true });
           await page.screenshot({ path: 'output/production-verification.png', fullPage: true });

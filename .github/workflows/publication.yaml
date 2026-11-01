@@ -101,7 +101,10 @@ jobs:
         if: steps.publish.outcome == 'success'
         run: |
           npx --no-install playwright install --with-deps chromium
-          npm run verify
+          status=0
+          npm run verify || status=$?
+          # Exit 2 records an explicit Cloudflare challenge, not a successful public check.
+          if [ "$status" -ne 0 ] && [ "$status" -ne 2 ]; then exit "$status"; fi
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always() && steps.publish.outcome == 'success'
         with:

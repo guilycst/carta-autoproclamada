@@ -1,9 +1,16 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
-import { removeCloudflareJavaScriptDetection } from './cloudflare-html.mjs';
+import { removeCloudflareJavaScriptDetection, assertNoCloudflareChallenge } from './cloudflare-html.mjs';
 
 const script = await readFile(new URL('./fixtures/cloudflare-jsd.html', import.meta.url), 'utf8');
+
+test('classifies only an explicit Cloudflare HTTP 403 challenge as blocked', () => {
+  assert.throws(() => assertNoCloudflareChallenge(403, 'challenge', '/'), { code: 'CLOUDFLARE_CHALLENGE' });
+  for (const [status, mitigated] of [[403, null], [500, 'challenge'], [200, 'challenge'], [404, null]]) {
+    assert.doesNotThrow(() => assertNoCloudflareChallenge(status, mitigated, '/'));
+  }
+});
 
 test('ignores only the reviewed Cloudflare edge script immediately before body closes', () => {
   const prefix = '<html><body><main>Authored content</main>';
