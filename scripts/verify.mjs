@@ -28,6 +28,11 @@ if (!origin) {
   assert.equal(origin, manifest.baseURL, 'Verification origin must match the canonical origin.');
   const browser = await chromium.launch({ channel: process.env.CI ? undefined : 'chrome' });
   const page = await browser.newPage();
+  page.setDefaultTimeout(10_000);
+  let challengeResponse;
+  page.on('response', response => {
+    if (new URL(response.url()).origin === origin && response.status() === 403 && response.headers()['cf-mitigated'] === 'challenge') challengeResponse = response;
+  });
   const fetchPublic = path => page.evaluate(async url => {
     const response = await fetch(url, { signal: AbortSignal.timeout(10_000), cache: 'no-store' });
     return { status: response.status, url: response.url, type: response.headers.get('content-type')?.split(';')[0], mitigated: response.headers.get('cf-mitigated'), bytes: Array.from(new Uint8Array(await response.arrayBuffer())) };
@@ -69,12 +74,13 @@ if (!origin) {
         console.log(JSON.stringify(receipt));
         break;
       } catch (error) {
-        if (error.code === 'CLOUDFLARE_CHALLENGE') {
-          const receipt = { status: 'blocked', origin, manifestDigest: manifest.digest, checkedAt: new Date().toISOString(), reason: error.message };
+        if (error.code === 'CLOUDFLARE_CHALLENGE' || challengeResponse) {
+          const reason = challengeResponse ? `Cloudflare requires a human challenge for ${challengeResponse.url()}.` : error.message;
+          const receipt = { status: 'blocked', origin, manifestDigest: manifest.digest, checkedAt: new Date().toISOString(), reason };
           await mkdir('output', { recursive: true });
           await writeFile('output/production-verification.json', JSON.stringify(receipt, null, 2) + '\n');
-          await page.screenshot({ path: 'output/production-verification.png', fullPage: true });
-          console.warn(`::warning::Public verification blocked. ${error.message} Deployment completed; public file checks are incomplete.`);
+          await page.screenshot({ path: 'output/production-verification.png', fullPage: true }).catch(error => console.warn(`Diagnostic screenshot unavailable: ${error.message}`));
+          console.warn(`::warning::Public verification blocked. ${reason} Deployment completed; public file checks are incomplete.`);
           if (process.env.GITHUB_STEP_SUMMARY) await appendFile(process.env.GITHUB_STEP_SUMMARY, `### Public verification blocked\n\nDeployment completed, but Cloudflare requires a human challenge from this runner. Public file checks are incomplete. Inspect the verification artifact and check ${origin} from a browser.\n`);
           process.exitCode = 2;
           break;
