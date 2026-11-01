@@ -1,5 +1,5 @@
 ---
-title: Sua Excelência, você. Gere sua carta de autoproclamação.
+title: Vossa Excelência, Presidente. Gere sua carta de autoproclamação.
 description: Não ganhou eleição? Não disputou? Declare-se presidente do Brasil mesmo assim. Uma paródia para baixar em PDF e PNG.
 language: pt-BR
 ---
@@ -8,7 +8,7 @@ language: pt-BR
   <header class="masthead"><div class="portal-brand"><img id="national-emblem" src="./assets/brasao-parodia.png" alt="Brasão paródico da República Autoproclamada do Brazil" width="64" height="64"><a class="brand" href="/" aria-label="Carta, início">carta</a></div><a class="parody-label" href="https://guigoes.com">Uma paródia do Guigoes</a></header>
   <div class="workspace">
     <section class="editor" aria-labelledby="page-title">
-      <h1 id="page-title">Sua Excelência,<br>você.</h1>
+      <h1 id="page-title">Vossa Excelência,<br>Presidente.</h1>
       <p class="intro">Não ganhou eleição? Não disputou?<br>Uma carta resolve.</p>
       <form id="letter-form">
         <div class="field"><label for="president-name">Qual é seu nome?</label><input id="president-name" name="name" placeholder="Nome de quem vai assumir" maxlength="80" autocomplete="name" required aria-describedby="name-help"><p id="name-help" class="hint">É o único requisito para tomar posse aqui.</p></div>
