@@ -2,6 +2,25 @@
 title: Vossa Excelência, Presidente. Gere sua carta de autoproclamação.
 description: Não ganhou eleição? Não disputou? Declare-se presidente do Brasil mesmo assim. Uma paródia para baixar em PDF e PNG.
 language: pt-BR
+structured_data:
+  '@context': https://schema.org
+  '@type': WebApplication
+  '@id': https://carta.guigoes.com/#generator
+  url: https://carta.guigoes.com/
+  name: Carta
+  description: Gerador gratuito de cartas fictícias de autoproclamação à Presidência do Brasil. Uma paródia política, sem valor oficial, para personalizar e baixar em PNG ou PDF.
+  applicationCategory: EntertainmentApplication
+  applicationSubCategory: Gerador de cartas de paródia
+  genre: Paródia política
+  inLanguage: pt-BR
+  isAccessibleForFree: true
+  browserRequirements: Requer navegador com JavaScript e suporte a Canvas.
+  image: https://carta.guigoes.com/assets/social.png
+  mainEntityOfPage: https://carta.guigoes.com/
+  featureList:
+    - Personalização de nome, título e local de governo fictício
+    - Prévia da carta no navegador
+    - Exportação em PNG e PDF de uma página A4
 ---
 
 <div class="carta-app">

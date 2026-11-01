@@ -2,6 +2,22 @@ import { test, expect } from '@playwright/test';
 import { readFile, mkdir } from 'node:fs/promises';
 import { PDFDocument } from 'pdf-lib';
 
+test('publishes the parody generator schema in HTML without requiring JavaScript', async ({ request }) => {
+  const response = await request.get('/');
+  expect(response.ok()).toBe(true);
+  const head = (await response.text()).split('</head>')[0];
+  const declarations = [...head.matchAll(/<script\b[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g)];
+  expect(declarations).toHaveLength(1);
+  const data = JSON.parse(declarations[0][1]);
+  expect(data['@context']).toBe('https://schema.org');
+  expect(data['@type']).toBe('WebApplication');
+  expect(data.url).toBe('https://carta.guigoes.com/');
+  expect(data.applicationCategory).toBe('EntertainmentApplication');
+  expect(data.genre).toBe('Paródia política');
+  expect(data.description).toMatch(/cartas fictícias.*paródia política, sem valor oficial/);
+  expect(data.isAccessibleForFree).toBe(true);
+});
+
 test('personalizes the letter and exports one matching PNG and A4 PDF', async ({ page }) => {
   await mkdir('output/pdf', { recursive: true });
   const errors = [];
